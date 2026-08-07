@@ -2,6 +2,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: #ffffff;
 }
 
 .screen-container {
@@ -10,35 +11,32 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  width: 100%;
-}
-
-.screen-enter {
-  animation: fadeSlideIn 0.5s ease forwards;
+  animation: fadeSlideIn 0.5s ease;
 }
 
 .settings-btn {
   position: fixed;
-  top: 1.5rem;
-  right: 1.5rem;
-  width: 48px;
-  height: 48px;
-  background: var(--bg-card);
-  backdrop-filter: blur(10px);
+  top: 20px;
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #ffffff;
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  color: var(--text-secondary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: var(--transition);
   z-index: 100;
+  color: var(--text-secondary);
 }
 
 .settings-btn:hover {
-  background: var(--bg-card-hover);
-  color: var(--text-primary);
+  background: var(--bg-secondary);
+  color: var(--accent-teal);
+  border-color: var(--accent-teal);
 }
 
 .settings-modal-overlay {
@@ -47,45 +45,54 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(15, 23, 42, 0.4);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  animation: fadeIn 0.2s ease;
 }
 
 .settings-modal {
-  width: 100%;
-  max-width: 480px;
-  margin: 1rem;
+  background: #ffffff;
+  border-radius: var(--radius);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+  padding: 2rem;
+  max-width: 420px;
+  width: 90%;
+  animation: fadeSlideIn 0.3s ease;
+}
+
+.settings-modal h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .settings-input {
   width: 100%;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--border-subtle);
+  padding: 14px 20px;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  font-size: 0.95rem;
+  font-family: var(--font-family);
   color: var(--text-primary);
-  padding: 14px;
-  border-radius: var(--radius-xs);
-  font-family: inherit;
-  font-size: 1rem;
+  background: #ffffff;
+  outline: none;
   transition: var(--transition);
 }
 
 .settings-input:focus {
-  outline: none;
-  border-color: var(--accent-blue);
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  border-color: var(--accent-teal);
+  box-shadow: 0 0 0 3px rgba(14, 158, 122, 0.1);
 }
 
-@keyframes fadeSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.settings-input::placeholder {
+  color: var(--text-muted);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

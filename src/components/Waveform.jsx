@@ -1,13 +1,6 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
-const Waveform = ({
-  data = [],
-  width = 600,
-  height = 200,
-  color = '#06b6d4',
-  lineWidth = 2.5,
-  showGrid = true
-}) => {
+const Waveform = ({ data = [], width = 600, height = 200, color = '#0e9e7a' }) => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -15,98 +8,75 @@ const Waveform = ({
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
-    const { width: w, height: h } = canvas;
     
-    // Clear canvas
-    ctx.clearRect(0, 0, w, h);
-    
-    // Draw background
-    ctx.fillStyle = 'transparent';
-    ctx.fillRect(0, 0, w, h);
-    
-    // Draw grid
-    if (showGrid) {
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      for (let i = 1; i <= 3; i++) {
-        const y = (h * i) / 4;
-        ctx.moveTo(0, y);
-        ctx.lineTo(w, y);
-      }
-      ctx.stroke();
-    }
-    
-    if (!data || data.length === 0) return;
-    
-    // Find min and max for normalization
-    let min = data[0];
-    let max = data[0];
-    for (let i = 1; i < data.length; i++) {
-      if (data[i] < min) min = data[i];
-      if (data[i] > max) max = data[i];
-    }
-    
-    const range = max - min || 1;
-    
-    // Draw waveform
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, width, height);
+
+    // Draw subtle grid
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.04)';
+    ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.strokeStyle = color;
-    ctx.lineWidth = lineWidth;
-    
-    // Add glow
-    ctx.shadowBlur = 10;
-    ctx.shadowColor = color;
-    
-    const xStep = w / Math.max(data.length - 1, 1);
-    
-    // Draw line
-    for (let i = 0; i < data.length; i++) {
-      const x = i * xStep;
-      // Normalize to 0-1, invert so higher values are up, scale to 80% of height, center vertically
-      const normalized = (data[i] - min) / range;
-      const y = h * 0.9 - (normalized * (h * 0.8));
-      
-      if (i === 0) {
-        ctx.moveTo(x, y);
-      } else {
-        ctx.lineTo(x, y);
-      }
+    for (let x = 0; x <= width; x += 40) {
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, height);
+    }
+    for (let y = 0; y <= height; y += 40) {
+      ctx.moveTo(0, y);
+      ctx.lineTo(width, y);
     }
     ctx.stroke();
+
+    if (!data || data.length === 0) return;
+
+    const min = Math.min(...data);
+    const max = Math.max(...data);
+    const range = max - min || 1;
     
-    // Reset shadow for fill
-    ctx.shadowBlur = 0;
-    
-    // Draw gradient fill
-    const gradient = ctx.createLinearGradient(0, 0, 0, h);
-    gradient.addColorStop(0, `${color}4D`); // 30% opacity
-    gradient.addColorStop(1, `${color}00`); // 0% opacity
-    
-    ctx.lineTo(w, h);
-    ctx.lineTo(0, h);
+    const points = [];
+    for (let i = 0; i < data.length; i++) {
+      const x = (i / (data.length - 1)) * width;
+      const normalizedY = (data[i] - min) / range;
+      const y = height - (normalizedY * height * 0.8 + height * 0.1);
+      points.push({ x, y });
+    }
+
+    // Soft fill below the line
+    ctx.beginPath();
+    ctx.moveTo(0, height);
+    points.forEach(p => ctx.lineTo(p.x, p.y));
+    ctx.lineTo(width, height);
     ctx.closePath();
-    ctx.fillStyle = gradient;
+    ctx.fillStyle = 'rgba(14, 158, 122, 0.08)';
     ctx.fill();
     
-  }, [data, width, height, color, lineWidth, showGrid]);
+    // Draw solid line
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.5;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    points.forEach((point, i) => {
+      if (i === 0) ctx.moveTo(point.x, point.y);
+      else ctx.lineTo(point.x, point.y);
+    });
+    ctx.stroke();
+    
+  }, [data, width, height, color]);
 
   return (
-    <div style={{
-      borderRadius: 'var(--radius-sm)',
-      border: '1px solid var(--border-subtle)',
-      overflow: 'hidden',
-      background: 'var(--bg-secondary)',
-      width: '100%',
-      maxWidth: `${width}px`
-    }}>
-      <canvas
-        ref={canvasRef}
-        width={width}
-        height={height}
-        style={{ display: 'block', width: '100%', height: 'auto' }}
-      />
-    </div>
+    <canvas 
+      ref={canvasRef} 
+      width={width} 
+      height={height}
+      style={{
+        width: '100%',
+        maxWidth: `${width}px`,
+        height: 'auto',
+        borderRadius: '16px',
+        border: '1px solid #e2e8f0',
+        display: 'block'
+      }}
+    />
   );
 };
 

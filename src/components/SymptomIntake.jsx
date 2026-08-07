@@ -45,7 +45,6 @@ function SymptomIntake({ onSubmit }) {
 
       recognitionRef.current.onend = () => {
         if (isListening) {
-          // Restart if it ended automatically but we still want to listen
           try {
             recognitionRef.current.start();
           } catch (e) {
@@ -62,9 +61,8 @@ function SymptomIntake({ onSubmit }) {
         recognitionRef.current.stop();
       }
     };
-  }, []); // Only run once on mount
+  }, []);
 
-  // Watch isListening separately to handle manual toggling
   useEffect(() => {
     if (!recognitionRef.current) return;
     
@@ -97,13 +95,13 @@ function SymptomIntake({ onSubmit }) {
 
   return (
     <div className="symptom-intake">
-      <h2>Describe Your Symptoms</h2>
-      <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-        {speechSupported ? "Tap the microphone and tell us how you're feeling" : "Please type your symptoms below"}
+      <h2>Symptom Dictation</h2>
+      <p className="subtitle">
+        {speechSupported ? "Tap the microphone to dictate your symptoms" : "Please type your symptoms below"}
       </p>
 
       {speechSupported && (
-        <div style={{ position: 'relative', marginBottom: '2rem' }}>
+        <div className="mic-container">
           {isListening && (
             <>
               <div className="mic-ring ring-1"></div>
@@ -126,46 +124,47 @@ function SymptomIntake({ onSubmit }) {
 
       {isListening && (
         <div className="listening-indicator">
-          <span>Listening</span>
+          <span>Recording</span>
           <span className="dot dot-1">.</span>
           <span className="dot dot-2">.</span>
           <span className="dot dot-3">.</span>
         </div>
       )}
 
-      {error && <div style={{ color: 'var(--emergency)', marginBottom: '1rem' }}>Error: {error}</div>}
+      {error && <div className="error-text">Error: {error}</div>}
 
-      <div className="transcript-area glass-card">
-        {speechSupported ? (
-          <>
-            <span>{transcript}</span>
-            <span className="interim-text">{interimTranscript}</span>
-            {!transcript && !interimTranscript && !isListening && (
-              <span style={{ color: 'var(--text-muted)' }}>Your symptoms will appear here...</span>
-            )}
-          </>
-        ) : (
-          <textarea 
-            className="transcript-fallback" 
-            value={transcript}
-            onChange={handleManualEdit}
-            placeholder="Type your symptoms here..."
-            rows="5"
-          />
-        )}
-      </div>
-
-      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem', alignSelf: 'flex-end' }}>
-        {transcript.length} characters
+      <div className="transcript-card">
+        <div className="transcript-header">Clinical Notes</div>
+        <div className="transcript-area">
+          {speechSupported ? (
+            <>
+              <span>{transcript}</span>
+              <span className="interim-text">{interimTranscript}</span>
+              {!transcript && !interimTranscript && !isListening && (
+                <span className="placeholder-text">Waiting for dictation...</span>
+              )}
+            </>
+          ) : (
+            <textarea 
+              className="transcript-fallback" 
+              value={transcript}
+              onChange={handleManualEdit}
+              placeholder="Type your symptoms here..."
+              rows="6"
+            />
+          )}
+        </div>
+        <div className="char-count">
+          {transcript.length} chars
+        </div>
       </div>
 
       <button 
-        className="btn-primary submit-btn" 
+        className="submit-btn" 
         onClick={handleSubmit}
         disabled={!transcript.trim()}
-        style={{ marginTop: '1.5rem' }}
       >
-        Submit Symptoms
+        Submit to Chart
       </button>
     </div>
   );

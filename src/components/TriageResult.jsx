@@ -50,8 +50,8 @@ function TriageResult({ vitals, symptoms, onReset, apiKey }) {
       <div className="triage-result">
         <div className="loading-state">
           <div className="loading-spinner"></div>
-          <h2>Analyzing your health data...</h2>
-          <p style={{ color: 'var(--text-secondary)' }}>AI is evaluating your symptoms and vitals</p>
+          <h2>Evaluating Patient Data...</h2>
+          <p className="loading-text">Generating clinical summary report</p>
         </div>
       </div>
     );
@@ -60,10 +60,10 @@ function TriageResult({ vitals, symptoms, onReset, apiKey }) {
   if (error) {
     return (
       <div className="triage-result">
-        <div className="glass-card" style={{ borderLeft: '4px solid var(--emergency)' }}>
-          <h2 style={{ color: 'var(--emergency)', marginBottom: '1rem' }}>Analysis Error</h2>
-          <p style={{ marginBottom: '2rem' }}>{error}</p>
-          <button className="btn-secondary" onClick={onReset}>Return Home</button>
+        <div className="clinical-card error-card">
+          <h2 className="error-title">Evaluation Error</h2>
+          <p className="error-message">{error}</p>
+          <button className="reset-btn" onClick={onReset}>Return Home</button>
         </div>
       </div>
     );
@@ -72,56 +72,56 @@ function TriageResult({ vitals, symptoms, onReset, apiKey }) {
   if (!result) return null;
 
   const urgencyClass = result.urgency.toLowerCase();
-  const urgencyEmoji = urgencyClass === 'emergency' ? '🔴' : urgencyClass === 'urgent' ? '🟡' : '🟢';
 
   return (
     <div className="triage-result">
-      <div className={`urgency-card glass-card ${urgencyClass}`}>
+      <div className="report-header">
+        <h2>Patient Summary Report</h2>
+      </div>
+
+      <div className={`urgency-card clinical-card ${urgencyClass}`}>
         <div className="urgency-badge">
-          {urgencyEmoji} {result.urgency.toUpperCase()}
+          SEVERITY: {result.urgency.toUpperCase()}
         </div>
         
-        <p className="explanation-text">{result.explanation}</p>
+        <div className="explanation-section">
+          <h3 className="section-title">Assessment</h3>
+          <p className="explanation-text">{result.explanation}</p>
+        </div>
         
-        <div className="next-step-card glass-card">
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: `var(--${urgencyClass})`, flexShrink: 0, marginTop: '2px' }}>
-              <path d="M5 12h14"></path>
-              <path d="m12 5 7 7-7 7"></path>
-            </svg>
-            <div>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>Recommended Action</h3>
-              <p style={{ color: 'var(--text-secondary)' }}>{result.next_step}</p>
+        <div className="next-step-section">
+          <h3 className="section-title">Recommended Action</h3>
+          <p className="next-step-text">{result.next_step}</p>
+        </div>
+      </div>
+
+      <div className="summary-section clinical-card">
+        <h3 className="section-title">Clinical Data Recorded</h3>
+        
+        <div className="data-table">
+          <div className="data-row">
+            <div className="data-label">Heart Rate</div>
+            <div className="data-value">{vitals.heartRate ? Math.round(vitals.heartRate) : '--'} bpm</div>
+          </div>
+          <div className="data-row">
+            <div className="data-label">Respiration</div>
+            <div className="data-value">{vitals.breathingRate ? Math.round(vitals.breathingRate) : '--'} rpm</div>
+          </div>
+          <div className="data-row symptoms-row">
+            <div className="data-label">Reported Symptoms</div>
+            <div className="data-value symptoms-value">
+              {symptoms}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="summary-section glass-card">
-        <h3 style={{ fontSize: '1rem', marginBottom: '1rem', color: 'var(--text-secondary)' }}>Data Analyzed</h3>
-        
-        <div className="vitals-badges">
-          <div className="vital-badge">
-            <span className="vital-icon">❤️</span>
-            <span className="vital-value">{vitals.heartRate ? Math.round(vitals.heartRate) : '--'} bpm</span>
-          </div>
-          <div className="vital-badge">
-            <span className="vital-icon">🫁</span>
-            <span className="vital-value">{vitals.breathingRate ? Math.round(vitals.breathingRate) : '--'} rpm</span>
-          </div>
-        </div>
-        
-        <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(0,0,0,0.2)', borderRadius: 'var(--radius-xs)', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-          "{symptoms.length > 150 ? symptoms.substring(0, 150) + '...' : symptoms}"
-        </div>
-      </div>
-
       <p className="disclaimer-text">
-        ⚠️ This is a decision-support tool, not a medical diagnosis. Always consult a healthcare professional.
+        Disclaimer: This is an AI-generated decision-support summary and does not constitute a medical diagnosis. Always consult a qualified healthcare professional.
       </p>
 
-      <button className="btn-secondary reset-btn" onClick={onReset}>
-        Start Over
+      <button className="reset-btn" onClick={onReset}>
+        Start New Session
       </button>
     </div>
   );

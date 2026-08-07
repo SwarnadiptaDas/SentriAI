@@ -149,14 +149,29 @@ const VitalsScan = ({ onComplete }) => {
             const roiW = faceWidth * 0.4;
             const roiH = faceHeight * 0.15;
             
-            ctx.fillStyle = 'rgba(6, 182, 212, 0.2)';
-            ctx.strokeStyle = 'rgba(6, 182, 212, 0.8)';
+            // Professional viewfinder style
+            ctx.strokeStyle = '#0e9e7a';
             ctx.lineWidth = 2;
+            ctx.setLineDash([8, 8]);
             
             ctx.beginPath();
             ctx.rect(roiX, roiY, roiW, roiH);
-            ctx.fill();
             ctx.stroke();
+            ctx.setLineDash([]); // reset
+
+            // Corner brackets for clinical look
+            const cornerSize = 15;
+            ctx.strokeStyle = '#0e9e7a';
+            ctx.lineWidth = 3;
+            
+            // Top Left
+            ctx.beginPath(); ctx.moveTo(roiX, roiY + cornerSize); ctx.lineTo(roiX, roiY); ctx.lineTo(roiX + cornerSize, roiY); ctx.stroke();
+            // Top Right
+            ctx.beginPath(); ctx.moveTo(roiX + roiW - cornerSize, roiY); ctx.lineTo(roiX + roiW, roiY); ctx.lineTo(roiX + roiW, roiY + cornerSize); ctx.stroke();
+            // Bottom Left
+            ctx.beginPath(); ctx.moveTo(roiX, roiY + roiH - cornerSize); ctx.lineTo(roiX, roiY + roiH); ctx.lineTo(roiX + cornerSize, roiY + roiH); ctx.stroke();
+            // Bottom Right
+            ctx.beginPath(); ctx.moveTo(roiX + roiW - cornerSize, roiY + roiH); ctx.lineTo(roiX + roiW, roiY + roiH); ctx.lineTo(roiX + roiW, roiY + roiH - cornerSize); ctx.stroke();
             
             if (isScanningRef.current) {
               const hCtx = hiddenCanvas.getContext('2d');
@@ -179,7 +194,6 @@ const VitalsScan = ({ onComplete }) => {
                 if (signalBufferRef.current.length % 5 === 0) {
                   setSignalData([...signalBufferRef.current]);
                   
-                  // Simple signal quality heuristic
                   if (signalBufferRef.current.length > 30) {
                     const recent = signalBufferRef.current.slice(-30);
                     const variance = recent.reduce((a, b) => a + Math.pow(b - avgGreen, 2), 0) / recent.length;
@@ -192,9 +206,9 @@ const VitalsScan = ({ onComplete }) => {
             }
           } else {
             setFaceDetected(false);
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.strokeStyle = '#64748b';
             ctx.lineWidth = 2;
-            ctx.setLineDash([10, 10]);
+            ctx.setLineDash([8, 8]);
             ctx.beginPath();
             ctx.ellipse(overlay.width / 2, overlay.height / 2, overlay.width * 0.25, overlay.height * 0.35, 0, 0, 2 * Math.PI);
             ctx.stroke();
@@ -309,10 +323,6 @@ const VitalsScan = ({ onComplete }) => {
           style={{ display: 'none' }}
         />
         
-        {state === 'scanning' && (
-          <div className="scanning-ring"></div>
-        )}
-        
         {state === 'ready' && faceDetected && (
           <button className="start-scan-btn" onClick={startScan}>
             Start Scan
@@ -322,15 +332,15 @@ const VitalsScan = ({ onComplete }) => {
 
       {state === 'scanning' && (
         <div className="scan-progress-container">
-          <div className="scan-progress-wrapper" style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
-            <div className="scan-progress-bar" style={{ width: `${progress}%`, height: '100%', background: 'var(--accent-gradient)' }}></div>
+          <div className="scan-progress-wrapper">
+            <div className="scan-progress-bar" style={{ width: `${progress}%` }}></div>
           </div>
           <div className="signal-quality-indicator">
             <span className={`quality-dot ${signalQuality}`}></span>
             Signal Quality: {signalQuality.charAt(0).toUpperCase() + signalQuality.slice(1)}
           </div>
           <div className="waveform-container">
-            <Waveform data={signalData} width={500} height={120} />
+            <Waveform data={signalData} width={500} height={80} color="#0e9e7a" />
           </div>
         </div>
       )}
@@ -344,7 +354,7 @@ const VitalsScan = ({ onComplete }) => {
 
       {state === 'complete' && (
         <div className="vitals-result-container">
-          <div className="vitals-result-card">
+          <div className="vitals-result-card clinical-card">
             <div className="vital-item">
               <span className="vital-label">Heart Rate</span>
               <div className="vital-value-group">
@@ -358,8 +368,8 @@ const VitalsScan = ({ onComplete }) => {
               <div className="vital-item">
                 <span className="vital-label">Breathing Rate</span>
                 <div className="vital-value-group">
-                  <span className="breath-icon">💨</span>
-                  <span className="bpm-number secondary">{vitals.breathingRate}</span>
+                  <span className="breath-icon">🫁</span>
+                  <span className="bpm-number">{vitals.breathingRate}</span>
                   <span className="vital-unit">RPM</span>
                 </div>
               </div>
