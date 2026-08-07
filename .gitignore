@@ -1,9 +1,5 @@
-node_modules
-dist
-dist-ssr
-*.local
+node_modules/
 .env
-.env.*
-.env.local
-.env.*.local
+dist/
+build/
 .DS_Store

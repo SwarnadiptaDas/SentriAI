@@ -1,62 +1,79 @@
-# AI Health Kiosk (SentriAI) 🩺🤖
+# SentriAI — Contactless AI Health Triage Kiosk
 
-A contactless health triage web application that combines webcam-based vital signs detection with AI-powered voice symptom analysis to provide instant triage guidance. 
+SentriAI is a contactless, full-stack health triage prototype designed to rapidly assess patient urgency using purely remote sensing and conversational AI. 
 
-Built as a single-page kiosk-style UI, this tool is designed to be completely contactless and user-friendly, operating directly in the browser with no additional hardware or wearables required.
+The system leverages computer vision to extract physiological signals (rPPG) from a standard webcam, captures self-reported symptoms via voice/text, and uses a Large Language Model (LLM) to perform a clinical triage classification.
 
-## ✨ Features
+---
 
-1. **Contactless Vitals Scanning (rPPG)**
-   - Uses your webcam and MediaPipe Face Landmarker to detect your face and isolate the forehead region.
-   - Extracts the heart rate (and estimates breathing rate) by analyzing the micro-variations of green light absorption in your facial capillaries (remote photoplethysmography).
-   - Real-time animated waveform visualization of the blood pulse signal.
+## 🏗 System Architecture
 
-2. **Voice Symptom Intake**
-   - Built-in speech-to-text using the browser's Web Speech API.
-   - Users can simply tap a microphone and describe how they are feeling naturally.
-   - Live transcript generation with a text fallback for unsupported browsers.
+The project has been refactored into a modern, professional monorepo structure with distinct frontend and backend services:
 
-3. **AI-Powered Clinical Triage**
-   - Integrates with Groq's high-speed LLM API (`llama-3.1-70b-versatile`).
-   - Uses an Emergency Severity Index (ESI)-inspired prompt to combine the measured vitals with the transcribed symptoms.
-   - Outputs a color-coded urgency level (🔴 Emergency, 🟡 Urgent, 🟢 Routine), a plain-language explanation, and recommended next steps.
+```text
+ai-health-kiosk/
+├── client/         # React + Vite frontend application
+│   ├── src/        
+│   │   ├── components/ # Modular UI (VitalsScan, TriageResult, etc.)
+│   │   ├── utils/      # Signal processing algorithms (FFT, filtering)
+│   │   └── api.js      # Backend integration layer
+├── server/         # Node.js + Express backend service
+│   ├── routes/     # API endpoints for session & triage management
+│   └── services/   # LLM orchestration (Groq API) & in-memory store
+```
 
-## 🛠️ Tech Stack
+### 🧠 Core Technologies
+*   **Frontend**: React, Vite, Tailwind CSS (v3)
+*   **Backend**: Node.js, Express
+*   **AI Models**: 
+    *   `MediaPipe FaceLandmarker` (Browser-side face tracking)
+    *   `Llama 3.1 70B` via Groq (Server-side clinical reasoning)
 
-- **Frontend Framework:** React + Vite
-- **Computer Vision:** MediaPipe Tasks Vision (`@mediapipe/tasks-vision`)
-- **Signal Processing:** Custom FFT (Fast Fourier Transform), Bandpass Filtering, and Detrending algorithms written in plain JavaScript.
-- **Styling:** Custom CSS with a premium, dark, glassmorphic design system.
-- **AI / LLM:** Groq API (OpenAI-compatible endpoints).
+## ✨ Key Features
+
+1.  **Contactless Vitals Extraction (rPPG)**
+    *   Identifies the user's forehead Region of Interest (ROI) dynamically.
+    *   Measures light absorption changes in the green channel to extract pulse waves.
+    *   Calculates Heart Rate (BPM) and estimates HRV Stress levels via FFT.
+2.  **Multimodal Symptom Intake**
+    *   Collects patient symptoms in their own words.
+3.  **Agentic LLM Triage**
+    *   Fuses vitals data + symptom transcript into a structured ESI-style triage assessment.
+    *   Classifies urgency into **Emergency**, **Urgent**, or **Routine**.
+    *   Provides concrete next steps and explainability ("Why this result?").
+
+---
 
 ## 🚀 Getting Started
 
-### Prerequisites
-- Node.js (v16+)
-- A webcam
-- A [Groq API Key](https://console.groq.com/) for the AI triage step.
+### 1. Setup the Backend
+```bash
+cd server
+npm install
+```
 
-### Installation
+Create a `.env` file in the `server` directory and add your Groq API key:
+```env
+PORT=3001
+GROQ_API_KEY=gsk_your_api_key_here
+```
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/SwarnadiptaDas/SentriAI.git
-   cd SentriAI
-   ```
+Start the backend server:
+```bash
+node index.js
+```
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+### 2. Setup the Frontend
+Open a new terminal window:
+```bash
+cd client
+npm install
+npm run dev
+```
 
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
+Visit `http://localhost:5173` to experience SentriAI.
 
-4. Open `http://localhost:5173` in your browser.
-
-5. Click the gear icon (⚙️) in the top right corner of the welcome screen to paste your Groq API key before testing the triage features.
+---
 
 ## ⚠️ Disclaimer
-**This is a decision-support prototype, not a certified medical device.** The vitals detection relies heavily on good, even lighting and sitting still. It should never be used for real medical diagnoses. Always consult a certified healthcare professional for medical advice.
+**This software is a decision-support prototype built for demonstration purposes. It is NOT a certified medical device and should not be used to diagnose or treat actual medical conditions.**
