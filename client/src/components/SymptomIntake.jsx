@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
 
-const SymptomIntake = ({ onSubmit }) => {
+const SymptomIntake = ({ onSubmit, preliminaryResult }) => {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [interimTranscript, setInterimTranscript] = useState('');
   const [error, setError] = useState('');
   const [manualText, setManualText] = useState('');
   const [isManualMode, setIsManualMode] = useState(false);
+
+  const getUrgencyBadge = (urgency) => {
+    const colors = {
+      Emergency: 'bg-emergency/20 text-emergency border-emergency/30',
+      Urgent: 'bg-urgent/20 text-urgent border-urgent/30',
+      Routine: 'bg-routine/20 text-routine border-routine/30'
+    };
+    return colors[urgency] || colors.Routine;
+  };
 
   const startListening = () => {
     setError('');
@@ -86,6 +95,24 @@ const SymptomIntake = ({ onSubmit }) => {
 
   return (
     <div className="glass-card flex flex-col items-center p-8 md:p-12 max-w-2xl w-full text-center animate-[fadeSlideIn_0.5s_ease]">
+      
+      {preliminaryResult && (
+        <div className="w-full bg-navy-850 border border-slate-700/50 rounded-xl p-4 mb-6 flex items-center justify-between text-left animate-[fadeSlideIn_0.5s_ease]">
+          <div>
+            <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-1">Preliminary Read (Vitals Only)</div>
+            <div className="text-slate-300 text-sm">
+              <span className={`px-2 py-0.5 rounded text-xs font-bold border ${getUrgencyBadge(preliminaryResult.urgency)} mr-2`}>
+                {preliminaryResult.urgency}
+              </span>
+              — {preliminaryResult.confidence}% confident
+            </div>
+          </div>
+          <div className="text-xs text-slate-500 italic max-w-[200px] text-right">
+            Voice not yet analyzed
+          </div>
+        </div>
+      )}
+
       <h2 className="text-3xl font-display font-bold text-white mb-2">How are you feeling?</h2>
       <p className="text-slate-400 mb-8 text-lg">Describe your symptoms naturally, as if talking to a nurse.</p>
 

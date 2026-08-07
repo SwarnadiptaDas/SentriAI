@@ -43,3 +43,22 @@ export const getFacilities = async (tier) => {
   const res = await fetch(url);
   return res.json();
 };
+
+export const runPreliminaryTriage = async (sessionId) => {
+  const res = await fetch(`${API_BASE}/session/${sessionId}/triage/preliminary`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({})
+  });
+  return res.json();
+};
+
+export const getDashboardSessions = async () => {
+  const res = await fetch(`${API_BASE}/dashboard/sessions`);
+  return res.json();
+};
+
+export const getDashboardPatterns = async () => {
+  const res = await fetch(`${API_BASE}/dashboard/patterns`);
+  return res.json();
+};

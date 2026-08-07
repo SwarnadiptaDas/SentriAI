@@ -55,6 +55,14 @@ const Sidebar = ({ currentTab, setTab }) => {
         </button>
       </nav>
 
+      <div className="px-4 mb-4">
+        <div className="h-px bg-slate-800/60 w-full mb-4"></div>
+        <button onClick={() => setTab('dashboard')} className={getTabClass('dashboard')}>
+          <Activity className={getIconClass('dashboard')} />
+          <span className="font-semibold text-sm">Staff Dashboard</span>
+        </button>
+      </div>
+
       {/* Health Assistant Card */}
       <div className="px-6 mb-6">
         <div className="bg-navy-800 border border-slate-700/50 rounded-2xl p-5 relative overflow-hidden">

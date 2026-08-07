@@ -9,7 +9,8 @@ import ReportsView from './components/ReportsView';
 import InsightsView from './components/InsightsView';
 import SettingsView from './components/SettingsView';
 import AboutView from './components/AboutView';
-import { startSession, saveVitals, saveSymptoms, runTriage } from './api';
+import OutbreakDashboard from './components/OutbreakDashboard';
+import { startSession, saveVitals, saveSymptoms, runTriage, runPreliminaryTriage } from './api';
 import './index.css';
 
 import Sidebar from './components/Sidebar';
@@ -21,6 +22,7 @@ function App() {
   const [sessionId, setSessionId] = useState(null);
   const [vitals, setVitals] = useState(null);
   const [symptoms, setSymptoms] = useState('');
+  const [preliminaryResult, setPreliminaryResult] = useState(null);
   const [triageResult, setTriageResult] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -38,10 +40,15 @@ function App() {
 
   const handleVitalsComplete = async (scannedVitals) => {
     setVitals(scannedVitals);
+    setScreen('symptoms');
+    
     if (sessionId && sessionId !== 'OFFLINE_MODE') {
       await saveVitals(sessionId, scannedVitals);
+      // Kick off preliminary triage in background
+      runPreliminaryTriage(sessionId)
+        .then(res => setPreliminaryResult(res))
+        .catch(err => console.error('Preliminary triage error:', err));
     }
-    setScreen('symptoms');
   };
 
   const handleSymptomsSubmit = async (transcript) => {
@@ -58,7 +65,8 @@ function App() {
         urgency: 'Routine',
         explanation: 'Offline mode active. Symptoms recorded locally.',
         next_step: 'Please consult a doctor when online.',
-        key_factors: ['Offline']
+        key_factors: ['Offline'],
+        confidence: 0
       });
     }
     setIsProcessing(false);
@@ -69,6 +77,7 @@ function App() {
     setSessionId(null);
     setVitals(null);
     setSymptoms('');
+    setPreliminaryResult(null);
     setTriageResult(null);
   };
 
@@ -96,10 +105,23 @@ function App() {
               )}
               
               {screen !== 'welcome' && (
-                <div className="flex-1 flex items-center justify-center">
+                <div className="flex-1 flex items-center justify-center relative w-full h-full">
                   {screen === 'vitals' && <VitalsScan onComplete={handleVitalsComplete} />}
-                  {screen === 'symptoms' && <SymptomIntake onSubmit={handleSymptomsSubmit} />}
-                  {screen === 'triage' && <TriageResult result={triageResult} isProcessing={isProcessing} onReset={handleReset} sessionId={sessionId} />}
+                  {screen === 'symptoms' && (
+                    <SymptomIntake 
+                      onSubmit={handleSymptomsSubmit} 
+                      preliminaryResult={preliminaryResult}
+                    />
+                  )}
+                  {screen === 'triage' && (
+                    <TriageResult 
+                      result={triageResult} 
+                      preliminaryResult={preliminaryResult}
+                      isProcessing={isProcessing} 
+                      onReset={handleReset} 
+                      sessionId={sessionId} 
+                    />
+                  )}
                 </div>
               )}
             </>
@@ -110,6 +132,7 @@ function App() {
           {currentTab === 'insights' && <InsightsView />}
           {currentTab === 'settings' && <SettingsView />}
           {currentTab === 'about' && <AboutView />}
+          {currentTab === 'dashboard' && <OutbreakDashboard />}
         </main>
       </div>
     </div>
