@@ -6,7 +6,7 @@
 
 @layer base {
   body {
-    @apply bg-gradient-to-br from-[#0B1A28] to-[#0A1926] text-slate-100 min-h-screen antialiased;
+    @apply bg-navy-950 text-slate-100 min-h-screen antialiased;
     font-family: 'Inter', sans-serif;
   }
   

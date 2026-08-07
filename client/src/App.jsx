@@ -7,6 +7,9 @@ import WaveformStrip from './components/WaveformStrip';
 import { startSession, saveVitals, saveSymptoms, runTriage } from './api';
 import './index.css';
 
+import Sidebar from './components/Sidebar';
+import { Globe } from 'lucide-react';
+
 function App() {
   const [screen, setScreen] = useState('welcome');
   const [sessionId, setSessionId] = useState(null);
@@ -22,7 +25,6 @@ function App() {
       setScreen('vitals');
     } catch (err) {
       console.error('Failed to start session:', err);
-      // fallback for offline mode
       setSessionId('OFFLINE_MODE');
       setScreen('vitals');
     }
@@ -46,7 +48,6 @@ function App() {
       const result = await runTriage(sessionId);
       setTriageResult(result);
     } else {
-      // Mock result for offline
       setTriageResult({
         urgency: 'Routine',
         explanation: 'Offline mode active. Symptoms recorded locally.',
@@ -66,30 +67,35 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-navy-gradient text-slate-100 font-sans flex flex-col relative pt-8">
-      <WaveformStrip active={screen === 'vitals' && sessionId !== null} alert={triageResult?.urgency === 'Emergency'} />
-      <main className="flex-1 flex items-center justify-center p-4 sm:p-8 relative z-10">
-        {screen === 'welcome' && (
-          <WelcomeScreen onStart={handleStart} />
-        )}
+    <div className="min-h-screen bg-navy-950 text-slate-100 font-sans flex overflow-hidden">
+      <Sidebar />
+      
+      <div className="flex-1 flex flex-col relative h-screen overflow-y-auto">
+        {/* Top Header - Language Selector */}
+        <header className="absolute top-0 right-0 p-8 z-50">
+          <button className="flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700 bg-navy-900/50 hover:bg-navy-800 transition-colors text-sm font-semibold text-slate-200">
+            <Globe className="w-4 h-4 text-slate-400" />
+            English
+            <svg className="w-4 h-4 text-slate-400 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+        </header>
+
+        <WaveformStrip active={screen === 'vitals' && sessionId !== null} alert={triageResult?.urgency === 'Emergency'} />
         
-        {screen === 'vitals' && (
-          <VitalsScan onComplete={handleVitalsComplete} />
-        )}
-        
-        {screen === 'symptoms' && (
-          <SymptomIntake onSubmit={handleSymptomsSubmit} />
-        )}
-        
-        {screen === 'triage' && (
-          <TriageResult 
-            result={triageResult} 
-            isProcessing={isProcessing} 
-            onReset={handleReset}
-            sessionId={sessionId}
-          />
-        )}
-      </main>
+        <main className="flex-1 flex flex-col p-8 lg:p-12 relative z-10 w-full max-w-7xl mx-auto">
+          {screen === 'welcome' && (
+            <WelcomeScreen onStart={handleStart} />
+          )}
+          
+          {screen !== 'welcome' && (
+            <div className="flex-1 flex items-center justify-center">
+              {screen === 'vitals' && <VitalsScan onComplete={handleVitalsComplete} />}
+              {screen === 'symptoms' && <SymptomIntake onSubmit={handleSymptomsSubmit} />}
+              {screen === 'triage' && <TriageResult result={triageResult} isProcessing={isProcessing} onReset={handleReset} sessionId={sessionId} />}
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 }
