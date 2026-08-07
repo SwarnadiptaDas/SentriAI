@@ -16,6 +16,29 @@ const TriageResult = ({ result, preliminaryResult, isProcessing, onReset, sessio
     }
   }, [result]);
 
+  useEffect(() => {
+    if (result && !isProcessing) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const textToSpeak = result.needs_followup 
+          ? result.followup_question 
+          : `The triage engine recommends: ${result.next_step}`;
+          
+        const utterance = new SpeechSynthesisUtterance(textToSpeak);
+        // Slightly delay the speech to allow the UI animation to happen first if final result
+        const delay = result.needs_followup ? 100 : 800;
+        const timer = setTimeout(() => {
+          window.speechSynthesis.speak(utterance);
+        }, delay);
+        
+        return () => {
+          clearTimeout(timer);
+          window.speechSynthesis.cancel();
+        };
+      }
+    }
+  }, [result, isProcessing]);
+
   if (isProcessing) {
     return (
       <div className="flex flex-col items-center justify-center p-12 text-center gap-6 animate-[fadeSlideIn_0.5s_ease]">
