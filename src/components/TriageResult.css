@@ -1,0 +1,123 @@
+.triage-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 2rem 0;
+  gap: 1.5rem;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 4rem;
+}
+
+.loading-spinner {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--accent-blue);
+  animation: spin 1s linear infinite;
+}
+
+.urgency-card {
+  width: 100%;
+  animation: result-reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  border-left-width: 4px;
+}
+
+.urgency-card.emergency {
+  border-left-color: var(--emergency);
+  background: var(--emergency-bg);
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.1);
+}
+
+.urgency-card.urgent {
+  border-left-color: var(--urgent);
+  background: var(--urgent-bg);
+  box-shadow: 0 0 30px rgba(245, 158, 11, 0.1);
+}
+
+.urgency-card.routine {
+  border-left-color: var(--routine);
+  background: var(--routine-bg);
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.1);
+}
+
+.urgency-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  letter-spacing: 1px;
+}
+
+.explanation-text {
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: var(--text-primary);
+  margin-bottom: 2rem;
+}
+
+.next-step-card {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.summary-section {
+  width: 100%;
+  padding: 1.5rem;
+}
+
+.vitals-badges {
+  display: flex;
+  gap: 1rem;
+}
+
+.vital-badge {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  border: 1px solid var(--border-subtle);
+}
+
+.disclaimer-text {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-align: center;
+  max-width: 500px;
+}
+
+.reset-btn {
+  width: 100%;
+  max-width: 300px;
+  margin-top: 1rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes result-reveal {
+  0% { opacity: 0; transform: scale(0.95) translateY(20px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes border-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(0,0,0,0); }
+  50% { box-shadow: 0 0 30px currentColor; }
+}
