@@ -68,6 +68,16 @@ ai-health-kiosk/
    - Provides plain-language reasoning and concrete next steps
    - Explainability panel ("Why this result?") with key contributing factors
 
+### Advanced Capabilities (New)
+1. **Live Multi-Modal Fusion Visualization**
+   - After the vitals scan, the AI performs a **preliminary triage** (vitals only) to establish a baseline confidence level.
+   - Once symptoms are submitted, the UI animates a **live fusion transition**, showing exactly how the AI's urgency classification and confidence score evolved when combining the multimodal signals (vitals + voice).
+
+2. **Outbreak / Pattern Detection Dashboard**
+   - A population-level staff dashboard that aggregates anonymized triage sessions.
+   - Continuously extracts symptom keywords (e.g., fever, cough) and detects temporal clusters.
+   - Automatically flags localized "Pattern Alerts" when multiple patients report overlapping symptoms within a 24-hour window, providing an early-warning signal for potential outbreaks.
+
 ### Dashboard Views
 | View | Description |
 |------|-------------|
