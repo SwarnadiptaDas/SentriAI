@@ -95,57 +95,57 @@ const ReportsView = () => {
 
         {/* Right Column - Report Preview */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-2xl p-8 min-h-[600px] shadow-xl text-slate-800 relative">
+          <div className="bg-navy-850 rounded-2xl p-8 min-h-[600px] shadow-xl border border-slate-800/60 text-slate-100 relative">
             
             {/* Report Header */}
-            <div className="flex justify-between items-start border-b-2 border-slate-100 pb-6 mb-6">
+            <div className="flex justify-between items-start border-b border-slate-700/60 pb-6 mb-6">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-navy-950 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-navy-950 border border-mint/30 rounded-lg flex items-center justify-center">
                   <Activity className="w-6 h-6 text-mint" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-black text-navy-950 tracking-tight">Sentri<span className="text-mint font-bold">AI</span></h2>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Health Summary Report</p>
+                  <h2 className="text-2xl font-black text-white tracking-tight">Sentri<span className="text-mint font-bold">AI</span></h2>
+                  <p className="text-xs font-bold text-mint uppercase tracking-widest">Health Summary Report</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-sm font-semibold text-slate-600">Patient: John Doe</p>
-                <p className="text-sm text-slate-500">DOB: 05/12/1985</p>
-                <p className="text-xs text-slate-400 mt-1">Generated: {new Date().toLocaleDateString()}</p>
+                <p className="text-sm font-semibold text-white">Patient: John Doe</p>
+                <p className="text-sm text-slate-400">DOB: 05/12/1985</p>
+                <p className="text-xs text-slate-500 mt-1">Generated: {new Date().toLocaleDateString()}</p>
               </div>
             </div>
 
             {viewMode === 'patient' ? (
               // Patient Plain Language View
               <div className="animate-[fadeSlideIn_0.3s_ease]">
-                <h3 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                   <FileText className="w-5 h-5 text-mint" />
                   Monthly Overview
                 </h3>
                 
-                <div className="bg-slate-50 p-6 rounded-xl border border-slate-100 mb-6">
-                  <p className="text-slate-600 leading-relaxed text-lg">
-                    Over the past 30 days, John has completed <strong className="text-slate-800">3 health scans</strong>. 
-                    The average resting heart rate was <strong className="text-slate-800">85 BPM</strong>. 
-                    There was <strong className="text-rose-500">1 elevated alert (Emergency)</strong> recorded on Nov 20th due to chest tightness combined with tachycardia (105 BPM). 
+                <div className="bg-navy-900 p-6 rounded-xl border border-slate-700/60 mb-6">
+                  <p className="text-slate-300 leading-relaxed text-lg">
+                    Over the past 30 days, John has completed <strong className="text-white">3 health scans</strong>. 
+                    The average resting heart rate was <strong className="text-white">85 BPM</strong>. 
+                    There was <strong className="text-emergency font-bold">1 elevated alert (Emergency)</strong> recorded on Nov 20th due to chest tightness combined with tachycardia (105 BPM). 
                     Subsequent scans returned to baseline routine status.
                   </p>
                 </div>
 
-                <h4 className="font-bold text-slate-800 mb-3">AI Triage Highlights</h4>
+                <h4 className="font-bold text-white mb-3">AI Triage Highlights</h4>
                 <ul className="space-y-4">
                   <li className="flex gap-4">
-                    <div className="w-1.5 bg-rose-400 rounded-full flex-shrink-0"></div>
+                    <div className="w-1.5 bg-emergency rounded-full flex-shrink-0"></div>
                     <div>
-                      <p className="font-bold text-slate-700">Nov 20, 2023 - Elevated Risk</p>
-                      <p className="text-slate-600 text-sm mt-1">AI flagged potential cardiovascular stress based on self-reported dizziness and measured 105 BPM. Patient advised to visit ER.</p>
+                      <p className="font-bold text-white">Nov 20, 2023 - Elevated Risk</p>
+                      <p className="text-slate-300 text-sm mt-1">AI flagged potential cardiovascular stress based on self-reported dizziness and measured 105 BPM. Patient advised to visit ER.</p>
                     </div>
                   </li>
                   <li className="flex gap-4">
-                    <div className="w-1.5 bg-emerald-400 rounded-full flex-shrink-0"></div>
+                    <div className="w-1.5 bg-routine rounded-full flex-shrink-0"></div>
                     <div>
-                      <p className="font-bold text-slate-700">Nov 15, 2023 - Routine</p>
-                      <p className="text-slate-600 text-sm mt-1">Vitals stable (74 BPM). No concerning symptoms reported.</p>
+                      <p className="font-bold text-white">Nov 15, 2023 - Routine</p>
+                      <p className="text-slate-300 text-sm mt-1">Vitals stable (74 BPM). No concerning symptoms reported.</p>
                     </div>
                   </li>
                 </ul>
@@ -153,7 +153,7 @@ const ReportsView = () => {
             ) : (
               // Doctor Structured Data View
               <div className="animate-[fadeSlideIn_0.3s_ease]">
-                <h3 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                   <FileSpreadsheet className="w-5 h-5 text-mint" />
                   Clinical Structured Data
                 </h3>
@@ -161,43 +161,43 @@ const ReportsView = () => {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="border-b-2 border-slate-200">
-                        <th className="py-3 px-4 font-bold text-sm text-slate-600">Timestamp</th>
-                        <th className="py-3 px-4 font-bold text-sm text-slate-600">HR (bpm)</th>
-                        <th className="py-3 px-4 font-bold text-sm text-slate-600">RR (rpm)</th>
-                        <th className="py-3 px-4 font-bold text-sm text-slate-600">CC (Chief Complaint)</th>
-                        <th className="py-3 px-4 font-bold text-sm text-slate-600">ESI Est.</th>
+                      <tr className="border-b border-slate-700">
+                        <th className="py-3 px-4 font-bold text-sm text-slate-400">Timestamp</th>
+                        <th className="py-3 px-4 font-bold text-sm text-slate-400">HR (bpm)</th>
+                        <th className="py-3 px-4 font-bold text-sm text-slate-400">RR (rpm)</th>
+                        <th className="py-3 px-4 font-bold text-sm text-slate-400">CC (Chief Complaint)</th>
+                        <th className="py-3 px-4 font-bold text-sm text-slate-400">ESI Est.</th>
                       </tr>
                     </thead>
-                    <tbody className="text-sm text-slate-600">
-                      <tr className="border-b border-slate-100 bg-rose-50/50">
-                        <td className="py-3 px-4 font-medium">11/20/23 14:30</td>
-                        <td className="py-3 px-4 text-rose-600 font-bold">105</td>
+                    <tbody className="text-sm text-slate-300">
+                      <tr className="border-b border-slate-800 bg-emergency/10">
+                        <td className="py-3 px-4 font-medium text-white">11/20/23 14:30</td>
+                        <td className="py-3 px-4 text-emergency font-bold">105</td>
                         <td className="py-3 px-4">22</td>
-                        <td className="py-3 px-4 italic">"Dizzy, chest tight"</td>
-                        <td className="py-3 px-4"><span className="bg-rose-100 text-rose-700 font-bold px-2 py-1 rounded text-xs">Level 2</span></td>
+                        <td className="py-3 px-4 italic text-slate-300">"Dizzy, chest tight"</td>
+                        <td className="py-3 px-4"><span className="bg-emergency/20 text-emergency border border-emergency/30 font-bold px-2 py-1 rounded text-xs">Level 2</span></td>
                       </tr>
-                      <tr className="border-b border-slate-100">
-                        <td className="py-3 px-4 font-medium">11/15/23 09:15</td>
+                      <tr className="border-b border-slate-800">
+                        <td className="py-3 px-4 font-medium text-white">11/15/23 09:15</td>
                         <td className="py-3 px-4">74</td>
                         <td className="py-3 px-4">14</td>
-                        <td className="py-3 px-4 italic">"Routine checkup"</td>
-                        <td className="py-3 px-4"><span className="bg-emerald-100 text-emerald-700 font-bold px-2 py-1 rounded text-xs">Level 5</span></td>
+                        <td className="py-3 px-4 italic text-slate-300">"Routine checkup"</td>
+                        <td className="py-3 px-4"><span className="bg-routine/20 text-routine border border-routine/30 font-bold px-2 py-1 rounded text-xs">Level 5</span></td>
                       </tr>
-                      <tr className="border-b border-slate-100">
-                        <td className="py-3 px-4 font-medium">10/30/23 16:45</td>
+                      <tr className="border-b border-slate-800">
+                        <td className="py-3 px-4 font-medium text-white">10/30/23 16:45</td>
                         <td className="py-3 px-4">76</td>
                         <td className="py-3 px-4">15</td>
-                        <td className="py-3 px-4 italic">"Mild headache"</td>
-                        <td className="py-3 px-4"><span className="bg-emerald-100 text-emerald-700 font-bold px-2 py-1 rounded text-xs">Level 4</span></td>
+                        <td className="py-3 px-4 italic text-slate-300">"Mild headache"</td>
+                        <td className="py-3 px-4"><span className="bg-routine/20 text-routine border border-routine/30 font-bold px-2 py-1 rounded text-xs">Level 4</span></td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
 
-                <div className="mt-8 bg-slate-50 p-4 rounded-lg border border-slate-200">
-                  <h4 className="font-bold text-xs uppercase tracking-widest text-slate-500 mb-2">Automated Assessment (LLaMA-3 70B)</h4>
-                  <p className="text-sm font-mono text-slate-700">
+                <div className="mt-8 bg-navy-900 p-4 rounded-lg border border-slate-700/60">
+                  <h4 className="font-bold text-xs uppercase tracking-widest text-mint mb-2">Automated Assessment (LLaMA-3 70B)</h4>
+                  <p className="text-sm font-mono text-slate-300">
                     &gt; Flagged 11/20 encounter for ESI 2 due to combination of tachycardia (HR &gt; 100) and high-risk symptom presentation (chest tightness + dizziness).
                   </p>
                 </div>
@@ -205,8 +205,8 @@ const ReportsView = () => {
             )}
             
             {/* Watermark */}
-            <div className="absolute bottom-8 left-0 w-full text-center pointer-events-none opacity-50">
-              <p className="text-xs text-slate-400 font-mono tracking-wider">GENERATED BY SENTRIAI • NOT A MEDICAL DIAGNOSIS</p>
+            <div className="absolute bottom-8 left-0 w-full text-center pointer-events-none opacity-40">
+              <p className="text-xs text-slate-500 font-mono tracking-wider">GENERATED BY SENTRIAI • NOT A MEDICAL DIAGNOSIS</p>
             </div>
           </div>
         </div>
