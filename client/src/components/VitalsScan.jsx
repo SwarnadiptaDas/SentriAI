@@ -239,11 +239,46 @@ const VitalsScan = ({ onComplete }) => {
     };
   }, [state]);
 
+  const audioContextRef = useRef(null);
+
+  const playHeartbeatSound = () => {
+    if (!audioContextRef.current) return;
+    const ctx = audioContextRef.current;
+    
+    // Create a low frequency "thump" (double thump for realism)
+    const playThump = (timeOffset, freq, maxGain) => {
+      const osc = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      
+      osc.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + timeOffset);
+      osc.frequency.exponentialRampToValueAtTime(freq * 0.5, ctx.currentTime + timeOffset + 0.15);
+      
+      gainNode.gain.setValueAtTime(0, ctx.currentTime + timeOffset);
+      gainNode.gain.linearRampToValueAtTime(maxGain, ctx.currentTime + timeOffset + 0.05);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + timeOffset + 0.15);
+      
+      osc.start(ctx.currentTime + timeOffset);
+      osc.stop(ctx.currentTime + timeOffset + 0.15);
+    };
+
+    playThump(0, 65, 0.4);       // First thump (lub)
+    playThump(0.2, 75, 0.2);     // Second thump (dub)
+  };
+
   const startScan = () => {
     setState('scanning');
     isScanningRef.current = true;
     signalBufferRef.current = [];
     timestampsRef.current = [];
+    
+    // Initialize Web Audio API on user interaction
+    if (!audioContextRef.current) {
+      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+    }
     
     let scanTime = 0;
     const totalTime = 15000;
@@ -251,6 +286,11 @@ const VitalsScan = ({ onComplete }) => {
     scanIntervalRef.current = setInterval(() => {
       scanTime += 100;
       setProgress((scanTime / totalTime) * 100);
+      
+      // Play heartbeat sound roughly every 1 second (800ms)
+      if (scanTime % 800 === 0) {
+        playHeartbeatSound();
+      }
       
       if (scanTime >= totalTime) {
         clearInterval(scanIntervalRef.current);
