@@ -1,7 +1,17 @@
 import React from 'react';
 import { Home, Clock, FileBarChart, Lightbulb, Settings, Info, Activity } from 'lucide-react';
 
-const Sidebar = () => {
+const Sidebar = ({ currentTab, setTab }) => {
+  const getTabClass = (tabId) => {
+    return currentTab === tabId
+      ? "flex items-center gap-4 px-4 py-3 bg-mint/10 text-white rounded-xl cursor-pointer transition-colors"
+      : "flex items-center gap-4 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl cursor-pointer transition-colors";
+  };
+
+  const getIconClass = (tabId) => {
+    return currentTab === tabId ? "w-5 h-5 text-mint" : "w-5 h-5";
+  };
+
   return (
     <aside className="w-64 bg-navy-850 h-screen flex flex-col border-r border-slate-800/50 flex-shrink-0 z-20">
       
@@ -19,30 +29,30 @@ const Sidebar = () => {
 
       {/* Navigation */}
       <nav className="flex-1 px-4 py-2 flex flex-col gap-2">
-        <a href="#" className="flex items-center gap-4 px-4 py-3 bg-mint/10 text-white rounded-xl">
-          <Home className="w-5 h-5 text-mint" />
+        <button onClick={() => setTab('home')} className={getTabClass('home')}>
+          <Home className={getIconClass('home')} />
           <span className="font-semibold text-sm">Home</span>
-        </a>
-        <a href="#" className="flex items-center gap-4 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl transition-colors">
-          <Clock className="w-5 h-5" />
+        </button>
+        <button onClick={() => setTab('history')} className={getTabClass('history')}>
+          <Clock className={getIconClass('history')} />
           <span className="font-semibold text-sm">History</span>
-        </a>
-        <a href="#" className="flex items-center gap-4 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl transition-colors">
-          <FileBarChart className="w-5 h-5" />
+        </button>
+        <button onClick={() => setTab('reports')} className={getTabClass('reports')}>
+          <FileBarChart className={getIconClass('reports')} />
           <span className="font-semibold text-sm">Reports</span>
-        </a>
-        <a href="#" className="flex items-center gap-4 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl transition-colors">
-          <Lightbulb className="w-5 h-5" />
+        </button>
+        <button onClick={() => setTab('insights')} className={getTabClass('insights')}>
+          <Lightbulb className={getIconClass('insights')} />
           <span className="font-semibold text-sm">Insights</span>
-        </a>
-        <a href="#" className="flex items-center gap-4 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl transition-colors">
-          <Settings className="w-5 h-5" />
+        </button>
+        <button onClick={() => setTab('settings')} className={getTabClass('settings')}>
+          <Settings className={getIconClass('settings')} />
           <span className="font-semibold text-sm">Settings</span>
-        </a>
-        <a href="#" className="flex items-center gap-4 px-4 py-3 text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-xl transition-colors">
-          <Info className="w-5 h-5" />
+        </button>
+        <button onClick={() => setTab('about')} className={getTabClass('about')}>
+          <Info className={getIconClass('about')} />
           <span className="font-semibold text-sm">About</span>
-        </a>
+        </button>
       </nav>
 
       {/* Health Assistant Card */}

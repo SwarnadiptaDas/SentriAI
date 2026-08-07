@@ -4,6 +4,10 @@ import VitalsScan from './components/VitalsScan';
 import SymptomIntake from './components/SymptomIntake';
 import TriageResult from './components/TriageResult';
 import WaveformStrip from './components/WaveformStrip';
+import HistoryView from './components/HistoryView';
+import ReportsView from './components/ReportsView';
+import SettingsView from './components/SettingsView';
+import AboutView from './components/AboutView';
 import { startSession, saveVitals, saveSymptoms, runTriage } from './api';
 import './index.css';
 
@@ -11,6 +15,7 @@ import Sidebar from './components/Sidebar';
 import { Globe } from 'lucide-react';
 
 function App() {
+  const [currentTab, setCurrentTab] = useState('home');
   const [screen, setScreen] = useState('welcome');
   const [sessionId, setSessionId] = useState(null);
   const [vitals, setVitals] = useState(null);
@@ -68,7 +73,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-navy-950 text-slate-100 font-sans flex overflow-hidden">
-      <Sidebar />
+      <Sidebar currentTab={currentTab} setTab={setCurrentTab} />
       
       <div className="flex-1 flex flex-col relative h-screen overflow-y-auto">
         {/* Top Header - Language Selector */}
@@ -80,20 +85,29 @@ function App() {
           </button>
         </header>
 
-        <WaveformStrip active={screen === 'vitals' && sessionId !== null} alert={triageResult?.urgency === 'Emergency'} />
+        {currentTab === 'home' && <WaveformStrip active={screen === 'vitals' && sessionId !== null} alert={triageResult?.urgency === 'Emergency'} />}
         
         <main className="flex-1 flex flex-col p-8 lg:p-12 relative z-10 w-full max-w-7xl mx-auto">
-          {screen === 'welcome' && (
-            <WelcomeScreen onStart={handleStart} />
+          {currentTab === 'home' && (
+            <>
+              {screen === 'welcome' && (
+                <WelcomeScreen onStart={handleStart} />
+              )}
+              
+              {screen !== 'welcome' && (
+                <div className="flex-1 flex items-center justify-center">
+                  {screen === 'vitals' && <VitalsScan onComplete={handleVitalsComplete} />}
+                  {screen === 'symptoms' && <SymptomIntake onSubmit={handleSymptomsSubmit} />}
+                  {screen === 'triage' && <TriageResult result={triageResult} isProcessing={isProcessing} onReset={handleReset} sessionId={sessionId} />}
+                </div>
+              )}
+            </>
           )}
-          
-          {screen !== 'welcome' && (
-            <div className="flex-1 flex items-center justify-center">
-              {screen === 'vitals' && <VitalsScan onComplete={handleVitalsComplete} />}
-              {screen === 'symptoms' && <SymptomIntake onSubmit={handleSymptomsSubmit} />}
-              {screen === 'triage' && <TriageResult result={triageResult} isProcessing={isProcessing} onReset={handleReset} sessionId={sessionId} />}
-            </div>
-          )}
+
+          {currentTab === 'history' && <HistoryView />}
+          {currentTab === 'reports' && <ReportsView />}
+          {currentTab === 'settings' && <SettingsView />}
+          {currentTab === 'about' && <AboutView />}
         </main>
       </div>
     </div>
