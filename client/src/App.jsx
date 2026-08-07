@@ -6,6 +6,7 @@ import TriageResult from './components/TriageResult';
 import WaveformStrip from './components/WaveformStrip';
 import HistoryView from './components/HistoryView';
 import ReportsView from './components/ReportsView';
+import InsightsView from './components/InsightsView';
 import SettingsView from './components/SettingsView';
 import AboutView from './components/AboutView';
 import { startSession, saveVitals, saveSymptoms, runTriage } from './api';
@@ -106,6 +107,7 @@ function App() {
 
           {currentTab === 'history' && <HistoryView />}
           {currentTab === 'reports' && <ReportsView />}
+          {currentTab === 'insights' && <InsightsView />}
           {currentTab === 'settings' && <SettingsView />}
           {currentTab === 'about' && <AboutView />}
         </main>
