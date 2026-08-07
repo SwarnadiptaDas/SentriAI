@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 import { getFacilities } from '../api';
 
 const TriageResult = ({ result, preliminaryResult, isProcessing, onReset, sessionId }) => {
@@ -187,6 +188,30 @@ const TriageResult = ({ result, preliminaryResult, isProcessing, onReset, sessio
           </div>
         </div>
       )}
+
+      {/* Patient Handoff QR Code */}
+      <div className="w-full glass-card p-6 bg-gradient-to-br from-navy-900 to-navy-850 border border-mint/20">
+        <div className="flex flex-col md:flex-row items-center gap-6">
+          <div className="bg-white p-2 rounded-xl shadow-lg">
+            <QRCodeSVG 
+              value={`https://sentri.health/patient/session/${sessionId || 'DEMO'}`}
+              size={100}
+              bgColor={"#ffffff"}
+              fgColor={"#0A1926"}
+              level={"Q"}
+            />
+          </div>
+          <div className="text-center md:text-left flex-1">
+            <h3 className="text-xl font-bold text-white mb-2 flex items-center justify-center md:justify-start gap-2">
+              Patient Handoff
+              <span className="px-2 py-0.5 rounded bg-mint/20 text-mint text-[10px] uppercase tracking-widest border border-mint/30">Ready</span>
+            </h3>
+            <p className="text-slate-400 text-sm mb-0">
+              Scan this QR code with your phone to take your secure triage summary to the front desk or ER waiting room.
+            </p>
+          </div>
+        </div>
+      </div>
 
       <div className="flex gap-4 w-full mt-4">
         <button className="btn-secondary flex-1" onClick={onReset}>
