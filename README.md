@@ -1,79 +1,126 @@
 # SentriAI — Contactless AI Health Triage Kiosk
 
-SentriAI is a contactless, full-stack health triage prototype designed to rapidly assess patient urgency using purely remote sensing and conversational AI. 
-
-The system leverages computer vision to extract physiological signals (rPPG) from a standard webcam, captures self-reported symptoms via voice/text, and uses a Large Language Model (LLM) to perform a clinical triage classification.
+<p align="center">
+  <strong>Scan → Speak → Triage</strong><br/>
+  A contactless, full-stack health triage prototype powered by computer vision, voice AI, and clinical LLM reasoning.
+</p>
 
 ---
 
 ## 🏗 System Architecture
 
-The project has been refactored into a modern, professional monorepo structure with distinct frontend and backend services:
-
 ```text
 ai-health-kiosk/
-├── client/         # React + Vite frontend application
-│   ├── src/        
-│   │   ├── components/ # Modular UI (VitalsScan, TriageResult, etc.)
-│   │   ├── utils/      # Signal processing algorithms (FFT, filtering)
-│   │   └── api.js      # Backend integration layer
-├── server/         # Node.js + Express backend service
-│   ├── routes/     # API endpoints for session & triage management
-│   └── services/   # LLM orchestration (Groq API) & in-memory store
+├── client/                  # React + Vite frontend
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Sidebar.jsx          # Persistent navigation panel
+│   │   │   ├── WelcomeScreen.jsx    # Dashboard landing page
+│   │   │   ├── VitalsScan.jsx       # rPPG camera + MediaPipe face detection
+│   │   │   ├── SymptomIntake.jsx    # Voice/text symptom capture
+│   │   │   ├── TriageResult.jsx     # AI triage output with explainability
+│   │   │   ├── HistoryView.jsx      # Session timeline + trend graphs
+│   │   │   ├── ReportsView.jsx      # Exportable reports (Patient & Clinical view)
+│   │   │   ├── InsightsView.jsx     # AI-driven preventive health analytics
+│   │   │   ├── SettingsView.jsx     # Profile, privacy, accessibility controls
+│   │   │   └── AboutView.jsx        # Technical pipeline + disclaimers
+│   │   ├── utils/
+│   │   │   ├── signalProcessing.js  # FFT, bandpass filter, HR/BR estimation
+│   │   │   └── llm.js               # Client-side LLM utilities
+│   │   └── api.js                   # Backend API integration layer
+│   └── tailwind.config.js           # Custom dark theme tokens
+├── server/                  # Node.js + Express backend
+│   ├── routes/
+│   │   ├── session.js               # Session lifecycle management
+│   │   ├── triage.js                # LLM triage orchestration endpoint
+│   │   └── facilities.js            # Nearby facility lookup
+│   └── services/
+│       ├── llm.js                   # Groq LLaMA-3 70B integration
+│       └── sessionStore.js          # In-memory session store
 ```
 
 ### 🧠 Core Technologies
-*   **Frontend**: React, Vite, Tailwind CSS (v3)
-*   **Backend**: Node.js, Express
-*   **AI Models**: 
-    *   `MediaPipe FaceLandmarker` (Browser-side face tracking)
-    *   `Llama 3.1 70B` via Groq (Server-side clinical reasoning)
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| **Frontend** | React 18, Vite, Tailwind CSS v3 | Responsive dark-themed dashboard UI |
+| **Computer Vision** | MediaPipe FaceLandmarker | Browser-side face detection & ROI extraction |
+| **Signal Processing** | Custom FFT (Cooley-Tukey) | Heart rate & breathing rate estimation from rPPG |
+| **LLM Triage** | LLaMA 3.3 70B via Groq | ESI-style clinical urgency classification |
+| **Backend** | Node.js, Express | Session management & API orchestration |
 
-## ✨ Key Features
+---
 
-1.  **Contactless Vitals Extraction (rPPG)**
-    *   Identifies the user's forehead Region of Interest (ROI) dynamically.
-    *   Measures light absorption changes in the green channel to extract pulse waves.
-    *   Calculates Heart Rate (BPM) and estimates HRV Stress levels via FFT.
-2.  **Multimodal Symptom Intake**
-    *   Collects patient symptoms in their own words.
-3.  **Agentic LLM Triage**
-    *   Fuses vitals data + symptom transcript into a structured ESI-style triage assessment.
-    *   Classifies urgency into **Emergency**, **Urgent**, or **Routine**.
-    *   Provides concrete next steps and explainability ("Why this result?").
+## ✨ Features
+
+### Core Pipeline
+1. **Contactless Vitals Extraction (rPPG)**
+   - MediaPipe FaceLandmarker identifies the forehead ROI in real-time
+   - Extracts green-channel intensity variations to derive the cardiac pulse signal
+   - Calculates Heart Rate (BPM), Breathing Rate, and HRV stress via FFT spectral analysis
+
+2. **Voice / Text Symptom Intake**
+   - Captures patient-described symptoms via Web Speech API or manual text entry
+   - Feeds unstructured natural language into the triage engine
+
+3. **Agentic LLM Triage**
+   - Fuses vitals + symptoms into a structured ESI-style assessment
+   - Classifies urgency: **Emergency** · **Urgent** · **Routine**
+   - Provides plain-language reasoning and concrete next steps
+   - Explainability panel ("Why this result?") with key contributing factors
+
+### Dashboard Views
+| View | Description |
+|------|-------------|
+| **Home** | Landing page with hero section, "How It Works" pipeline, and session launcher |
+| **History** | Chronological session timeline with HR trend graphs, expandable session details, urgency badges, and "Compare to last visit" deltas |
+| **Reports** | Exportable health summaries with **Patient View** (plain language) and **Clinical View** (structured data table with ESI levels). Download PDF & Generate QR Code for clinical intake |
+| **Insights** | AI-driven preventive analytics — health score, risk pattern detection, cardiovascular recovery trends, and personalized recommendations |
+| **Settings** | Patient profiles & dependents, language preferences, notification controls, emergency auto-alert consent, data export/wipe, accessibility toggles |
+| **About** | Technical pipeline explanation (rPPG + LLM), formal medical disclaimer, data privacy statement, and project credits |
 
 ---
 
 ## 🚀 Getting Started
 
-### 1. Setup the Backend
+### 1. Backend Setup
 ```bash
 cd server
 npm install
 ```
 
-Create a `.env` file in the `server` directory and add your Groq API key:
+Create a `.env` file in the `server/` directory:
 ```env
 PORT=3001
 GROQ_API_KEY=gsk_your_api_key_here
 ```
+> Get a free Groq API key at [console.groq.com/keys](https://console.groq.com/keys)
 
-Start the backend server:
+Start the backend:
 ```bash
 node index.js
 ```
 
-### 2. Setup the Frontend
-Open a new terminal window:
+### 2. Frontend Setup
+In a new terminal:
 ```bash
 cd client
 npm install
 npm run dev
 ```
 
-Visit `http://localhost:5173` to experience SentriAI.
+Open **http://localhost:5173** to launch SentriAI.
+
+---
+
+## 🔒 Privacy & Data
+
+- **Video streams** are processed entirely in-browser via MediaPipe — never recorded or transmitted
+- **Symptom transcripts** are sent to Groq's LLM endpoint over TLS and are not permanently logged
+- **Session data** is stored in-memory on the server and is cleared on restart
+- All health data operations comply with a privacy-first, minimal-retention architecture
 
 ---
 
 ## ⚠️ Disclaimer
-**This software is a decision-support prototype built for demonstration purposes. It is NOT a certified medical device and should not be used to diagnose or treat actual medical conditions.**
+
+**SentriAI is a decision-support prototype built for demonstration and hackathon purposes. It is NOT a certified medical device and must not be used as a substitute for professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider in emergency situations.**
